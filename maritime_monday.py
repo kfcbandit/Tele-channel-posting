@@ -283,7 +283,7 @@ def telegram_send(token, chat_id, text):
 
 
 def require_env(name):
-    value = os.environ.get(name)
+    value = (os.environ.get(name) or "").strip()
     if not value:
         sys.exit(f"Error: environment variable {name} is not set.")
     return value
