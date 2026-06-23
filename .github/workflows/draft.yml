@@ -1,0 +1,43 @@
+name: MaritimeMonday draft
+
+# Every Monday, build the post from last week's jobs, send it to your review
+# chat as a draft, and save it to out/latest_draft.txt in the repo.
+
+on:
+  schedule:
+    # 00:00 UTC on Mondays == 08:00 Singapore time (SGT = UTC+8).
+    # To change the time, convert your desired SGT time to UTC and edit below.
+    # (GitHub runs cron in UTC and may delay it a few minutes under load.)
+    - cron: "0 0 * * 1"
+  workflow_dispatch: {}   # also lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write          # needed to commit the saved draft back to the repo
+
+jobs:
+  build-draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build draft and send it to the review chat
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
+        run: python maritime_monday.py --send-draft
+
+      - name: Save the draft back to the repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add out/latest_draft.txt
+          git commit -m "MaritimeMonday draft $(date -u +%Y-%m-%d)" \
+            || echo "No draft changes to commit"
+          git push
