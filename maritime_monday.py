@@ -8,9 +8,15 @@ What it does:
   2. Keeps only jobs POSTED IN THE PREVIOUS Mon-Sun week (relative to the run date,
      in Singapore time). E.g. a post built on Mon 22 Jun covers 15-21 Jun.
   3. Splits companies into "Active Employers" (badged) and "Other job opportunities"
-     (not badged), and formats the post in the #MaritimeMonday house style.
+     (not badged). Each COMPANY NAME links to its MaritimeONE company page and each
+     POSITION links to its job page. Messages are sent with HTML formatting.
   4. Sends the result to you as a DRAFT (your private chat with the bot), or
      publishes a previously-saved draft to the public channel.
+
+The "Target Audience" line for each job is chosen by a documented rule set — see the
+GUIDELINE comment above target_audience(). Because links use HTML, the saved draft in
+out/latest_draft.txt contains <a href="...">...</a> tags: when hand-editing it, change
+the visible words and leave the tags intact.
 
 Modes (CLI):
   --dry-run       Build and PRINT the post. No Telegram calls. (default)
@@ -41,6 +47,8 @@ PORTAL_URL = os.environ.get("PORTAL_URL", "https://www.maritimeone.sg/job-listin
 TIMEZONE = os.environ.get("TIMEZONE", "Asia/Singapore")
 DRAFT_PATH = os.environ.get("DRAFT_PATH", os.path.join("out", "latest_draft.txt"))
 PORTAL_LINK = "https://www.maritimeone.sg/job-listing"
+JOB_URL = "https://www.maritimeone.sg/job-detail/{}"
+COMPANY_URL = "https://www.maritimeone.sg/company-detail/{}"
 
 USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -50,15 +58,23 @@ USER_AGENT = (
 NUMBER_EMOJI = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣",
                 "6️⃣", "7️⃣", "8️⃣", "9️⃣", "\U0001f51f"]
 
-# Lines in the requirement text that are headers/boilerplate, not the actual audience.
-BOILERPLATE = re.compile(
-    r"^(who we are looking for|what we('re| are)? looking for|requirements?|"
-    r"qualifications?|the role|role overview|responsibilities|key responsibilities|"
-    r"job (description|requirements?|scope)|about (the role|us|you|the company)|"
-    r"we offer|what we offer|benefits?|why join us|your profile|the ideal candidate|"
-    r"candidate requirements?|target audience|preferred qualifications?)\s*[:.]?\s*$",
-    re.IGNORECASE,
-)
+# Section-header phrases that must NEVER be used as a Target Audience line. Matched
+# case-insensitively against a normalised line (trailing "(...)" and ":" removed).
+HEADER_PHRASES = {
+    "requirements", "requirement", "job requirements", "minimum requirements",
+    "qualifications", "qualification", "key qualifications", "key qualifications & skills",
+    "qualifications & skills", "preferred qualifications", "education",
+    "education and certification", "certification", "certifications", "skills", "key skills",
+    "desired skills", "technical competencies", "competencies", "personal attributes",
+    "attributes", "experience", "work experience", "relevant experience", "responsibilities",
+    "key responsibilities", "job description", "job scope", "scope", "overview",
+    "role overview", "the role", "about us", "about you", "about the role",
+    "about the company", "who we are looking for", "what we're looking for",
+    "what we are looking for", "what we offer", "we offer", "what you'll do",
+    "what you will do", "what you bring", "your profile", "the ideal candidate",
+    "nice to have", "must have", "eligibility", "eligibility criteria", "who should apply",
+    "benefits", "why join us", "target audience", "requirements & qualifications",
+}
 
 LEGAL_SUFFIX = re.compile(
     r"[\s,]+(pte\.?\s*ltd\.?|private\s+limited|pte\.?\s*limited|"
@@ -108,55 +124,106 @@ def previous_week_window(today=None):
 
 
 # --------------------------------------------------------------------------- #
-# Text helpers
+# Target Audience extraction
 # --------------------------------------------------------------------------- #
-def html_to_lines(raw):
-    """Convert an HTML fragment to a list of clean text lines."""
+# GUIDELINE — how the one-line "Target Audience" is chosen from a job's requirement
+# HTML. The requirement is split into blocks (each <p>, <li>, <h*> or <div>). A block
+# is treated as a SECTION HEADER and skipped when ANY of these is true:
+#   • it is an <h1>-<h6> heading; or
+#   • (almost) all its text is bold/underlined — e.g. <strong>Requirements:</strong>.
+#     A leading bold bullet like "<strong>• </strong>" does NOT count as bold text; or
+#   • its text (after removing a trailing "(...)") matches a known header phrase such as
+#     "Education", "Key Qualifications & Skills", "Technical Competencies"; or
+#   • it ends with ":" and is short; or is ALL-CAPS and short; or is only "(...)".
+# The Target Audience is the FIRST remaining block that reads like real content:
+# >= 4 words and containing lower-case letters. Fallbacks progressively relax this so
+# something sensible is always returned. Long lines are trimmed to ~220 characters.
+BLOCK_RE = re.compile(r"(?is)<(p|li|h[1-6]|div|tr)\b[^>]*>(.*?)</\1>")
+BOLD_RE = re.compile(r"(?is)<(?:strong|b|u)\b[^>]*>(.*?)</(?:strong|b|u)>")
+MARKER_RE = re.compile(r"^(?:[•●▪‣◦·–—\-\*]+|\(?[a-zA-Z0-9]{1,2}[.\)])\s*")
+
+
+def _plain(fragment):
+    """Strip tags/entities from an HTML fragment and drop a leading bullet/marker."""
+    text = re.sub(r"<[^>]+>", "", fragment)
+    text = html_lib.unescape(text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return MARKER_RE.sub("", text).strip()
+
+
+def _bold_ratio(fragment):
+    """Fraction of visible, non-bullet characters that sit inside <strong>/<b>/<u>."""
+    def squeeze(chunk):
+        return re.sub(r"[\s•·●▪‣◦]+", "", html_lib.unescape(re.sub(r"<[^>]+>", "", chunk)))
+    total = squeeze(fragment)
+    if not total:
+        return 0.0
+    bold = squeeze("".join(BOLD_RE.findall(fragment)))
+    return min(len(bold) / len(total), 1.0)
+
+
+def _requirement_blocks(raw):
+    """List of (text, is_heading_tag, bold_ratio) for each block in the HTML."""
     if not raw:
         return []
-    text = re.sub(r"(?i)<\s*br\s*/?>", "\n", raw)
-    text = re.sub(r"(?i)</\s*(p|div|li|tr|h[1-6]|ul|ol)\s*>", "\n", text)
-    text = re.sub(r"<[^>]+>", "", text)
-    text = html_lib.unescape(text)
-    lines = []
-    for line in text.split("\n"):
-        line = re.sub(r"[ \t ]+", " ", line).strip()
-        # strip a leading bullet / list marker: •, ·, -, *, (a), 1., a)
-        line = re.sub(r"^(?:[•●▪‣◦·–—\-\*]+|\(?[a-zA-Z0-9]{1,2}[\.\)])\s*",
-                      "", line).strip()
-        if line:
-            lines.append(line)
-    return lines
+    norm = re.sub(r"(?i)<\s*br\s*/?>", "</p><p>", raw)
+    norm = re.sub(r"(?i)</?(ul|ol)[^>]*>", "", norm)
+    blocks = []
+    for tag, inner in BLOCK_RE.findall(norm):
+        text = _plain(inner)
+        if text:
+            blocks.append((text, bool(re.fullmatch(r"h[1-6]", tag.lower())),
+                           _bold_ratio(inner)))
+    if not blocks:  # no block-level tags — fall back to line splitting
+        for line in _plain(re.sub(r"(?i)</?p[^>]*>", "\n", norm)).split("\n"):
+            if line.strip():
+                blocks.append((line.strip(), False, 0.0))
+    return blocks
 
 
-def _is_header_line(line):
-    """True if a line is a section header/label rather than real audience text."""
-    norm = line.replace("’", "'").replace("‘", "'")
-    if BOILERPLATE.match(norm):
+def _norm_header(text):
+    text = text.replace("’", "'").replace("‘", "'")
+    text = re.sub(r"\s*\([^)]*\)\s*$", "", text)           # drop a trailing "(...)"
+    return re.sub(r"\s+", " ", text).strip().strip(":").strip().lower()
+
+
+def _is_heading(text, is_htag, bold_ratio):
+    if is_htag or bold_ratio >= 0.7:
         return True
-    words = line.split()
-    if line.endswith(":") and len(words) <= 5:
+    if _norm_header(text) in HEADER_PHRASES:
         return True
-    if any(c.isalpha() for c in line) and line.upper() == line and len(words) <= 7:
+    words = text.split()
+    label = text.rstrip().rstrip(":").rstrip()          # text before a trailing colon
+    if text.rstrip().endswith(":") and len(label.split()) <= 7:
+        return True
+    if any(c.isalpha() for c in text) and text.upper() == text and len(words) <= 8:
+        return True
+    if re.fullmatch(r"\(.*\)", text.strip()):
         return True
     return False
 
 
-def condense_requirement(raw, max_len=220):
-    """Return a one-line 'Target Audience' summary from a requirement HTML blob."""
-    lines = html_to_lines(raw)
-    chosen = ""
-    for line in lines:
-        if len(line) < 3 or _is_header_line(line):
-            continue
-        chosen = line
-        break
-    if not chosen and lines:
-        chosen = lines[0]
-    if len(chosen) > max_len:
-        cut = chosen[:max_len].rsplit(" ", 1)[0].rstrip(",;:")
-        chosen = cut + "…"
-    return chosen
+def _truncate(text, max_len):
+    text = text.strip()
+    if len(text) <= max_len:
+        return text
+    return text[:max_len].rsplit(" ", 1)[0].rstrip(" ,;:") + "…"
+
+
+def target_audience(raw, max_len=220):
+    """Pick the best one-line Target Audience from a requirement HTML blob."""
+    blocks = _requirement_blocks(raw)
+    for text, is_htag, bold in blocks:               # ideal: a real content sentence
+        if (not _is_heading(text, is_htag, bold)
+                and len(text.split()) >= 4 and any(c.islower() for c in text)):
+            return _truncate(text, max_len)
+    for text, is_htag, bold in blocks:               # relax: any non-heading line
+        if not _is_heading(text, is_htag, bold) and len(text.split()) >= 3:
+            return _truncate(text, max_len)
+    for text, is_htag, bold in blocks:               # last resort: any non-heading line
+        if not _is_heading(text, is_htag, bold) and text.strip():
+            return _truncate(text, max_len)
+    return ""                                         # only headers present -> caller shows "—"
 
 
 def clean_company(name):
@@ -185,26 +252,40 @@ def group_by_company(jobs):
     return [groups[cid] for cid in order]
 
 
-def format_company_block(prefix, company, jobs):
-    name = clean_company(company.get("companyName", "")) or "Company"
-    titles = [(j.get("jobTitle") or "").strip() for j in jobs]
-    audiences = [condense_requirement(j.get("requirement", "")) for j in jobs]
+def esc(text):
+    """Escape &, <, > so free text is safe inside an HTML-parse-mode message."""
+    return html_lib.escape(text or "", quote=False)
 
-    out = [f"{prefix} {name}", ""]
+
+def job_link(job):
+    """Position title as an <a> link to its job page (plain text if no id)."""
+    title = esc((job.get("jobTitle") or "").strip()) or "—"
+    jid = job.get("jobid")
+    return f'<a href="{JOB_URL.format(jid)}">{title}</a>' if jid else title
+
+
+def format_company_block(prefix, company, jobs):
+    name = esc(clean_company(company.get("companyName", "")) or "Company")
+    cid = company.get("companyid")
+    name_html = f'<a href="{COMPANY_URL.format(cid)}">{name}</a>' if cid else name
+
+    out = [f"{prefix} {name_html}", ""]
     if len(jobs) == 1:
-        out.append("• Position(s):")
-        out.append(titles[0] or "—")
-        out.append("")
-        out.append("• Target Audience:")
-        out.append(audiences[0] or "—")
+        out += [
+            "• Position(s):",
+            job_link(jobs[0]),
+            "",
+            "• Target Audience:",
+            esc(target_audience(jobs[0].get("requirement", ""))) or "—",
+        ]
     else:
         out.append("• Position(s):")
-        for i, title in enumerate(titles):
-            out.append(f"({chr(97 + i)}) {title or '—'}")
+        for i, job in enumerate(jobs):
+            out.append(f"({chr(97 + i)}) {job_link(job)}")
         out.append("")
         out.append("• Target Audience:")
-        for i, aud in enumerate(audiences):
-            out.append(f"({chr(97 + i)}) {aud or '—'}")
+        for i, job in enumerate(jobs):
+            out.append(f"({chr(97 + i)}) {esc(target_audience(job.get('requirement', ''))) or '—'}")
     return "\n".join(out)
 
 
@@ -274,7 +355,12 @@ def telegram_send(token, chat_id, text):
     for chunk in split_message(text):
         resp = requests.post(
             url,
-            json={"chat_id": chat_id, "text": chunk, "disable_web_page_preview": True},
+            json={
+                "chat_id": chat_id,
+                "text": chunk,
+                "parse_mode": "HTML",
+                "disable_web_page_preview": True,
+            },
             timeout=30,
         )
         data = resp.json()

@@ -69,7 +69,9 @@ That's it. The Monday schedule is already configured.
 
 1. **Monday ~8am (SGT):** you receive the draft in your private Telegram chat.
 2. **Review it.** To change anything, open `out/latest_draft.txt` on GitHub, click
-   the pencil ✏️, edit, and **Commit changes**.
+   the pencil ✏️, edit, and **Commit changes**. The draft contains links written as
+   `<a href="...">Company or Job Title</a>` — edit the **visible words** between `>` and
+   `</a>`, and leave the `<a href="...">` and `</a>` tags alone.
 3. **Publish:** go to the **Actions** tab → **MaritimeMonday publish** → **Run workflow**.
    The bot posts the (edited) draft to your channel.
 
@@ -91,12 +93,41 @@ GitHub uses **UTC**. Singapore is UTC+8, so subtract 8 hours:
 - `0 1 * * 1`  → Monday 09:00 SGT
 - `30 23 * * 0` → Monday 07:30 SGT (Sunday 23:30 UTC)
 
+## Links
+
+Every **company name** links to its MaritimeONE company page and every **position**
+links to its job page, so readers can tap straight through to the listing.
+
+## How the "Target Audience" line is chosen
+
+Each job's requirement text is split into blocks (paragraphs and bullet points), and the
+script picks the first block that reads like a real requirement — deliberately **skipping
+section headers**. A block is treated as a header (and skipped) when any of these hold:
+
+- it is a heading (`<h1>`–`<h6>`) or is entirely **bold/underlined**
+  (e.g. **Requirements:**, **Technical Competencies**);
+- its wording matches a known header phrase — e.g. *Education*, *Qualifications*,
+  *Key Qualifications & Skills*, *Technical Competencies*, *Who We Are Looking For*,
+  *What We Offer*, *Responsibilities* (a trailing "(…)" is ignored, so
+  *Key Qualifications & Skills (…)* is caught too);
+- it ends with a colon and is short (e.g. *Skills to be developed for Intern:*);
+- it is ALL-CAPS and short, or is only a parenthetical "(…)".
+
+The chosen line is the first **non-header** block with at least 4 words and some lower-case
+letters (long lines are trimmed to ~220 characters). If a job's requirement contains *only*
+headers with no real text, the line shows `—` for you to fill in.
+
+To tune it, edit the `HEADER_PHRASES` list near the top of
+[maritime_monday.py](maritime_monday.py) — add any header wording you keep seeing slip through.
+
 ## Good to know
 
 - **Company names** sometimes come in ALL CAPS or with `Pte Ltd` from the portal.
   The script trims `Pte Ltd`-style suffixes; fix any odd casing in the review step.
-- **Target Audience** lines are auto-summarised from each job's requirements (first
-  meaningful line). They're a solid starting point — tidy them in the draft if needed.
+- **Target Audience** lines are auto-selected using the rules above — a solid starting
+  point, but always skim them in the draft and tidy any that read oddly.
+- Position titles occasionally include the employer's internal notes (e.g. "(Sup: …)").
+  That's from the portal data — delete it in the draft if you don't want it shown.
 - The script reads the portal's own embedded data (no fragile scraping). If MaritimeONE
   ever rebuilds their site and the script stops finding jobs, that's the thing to revisit.
 - `--dry-run` (default) prints only; `--send-draft` sends + saves; `--publish` posts the
