@@ -58,6 +58,10 @@ USER_AGENT = (
 NUMBER_EMOJI = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣",
                 "6️⃣", "7️⃣", "8️⃣", "9️⃣", "\U0001f51f"]
 
+# Show at most this many companies under "Other job opportunities" (1..10 -> keeps the
+# 1-10 emoji numbering, no "11." overflow). Active Employers (badged) are always shown.
+MAX_OTHER_COMPANIES = 10
+
 # Section-header phrases that must NEVER be used as a Target Audience line. Matched
 # case-insensitively against a normalised line (trailing "(...)" and ":" removed).
 HEADER_PHRASES = {
@@ -74,6 +78,15 @@ HEADER_PHRASES = {
     "what you will do", "what you bring", "your profile", "the ideal candidate",
     "nice to have", "must have", "eligibility", "eligibility criteria", "who should apply",
     "benefits", "why join us", "target audience", "requirements & qualifications",
+    "candidate profile", "candidate requirements", "position requirements",
+    "professional requirements", "academic requirements", "educational requirements",
+    "educational qualifications", "academic qualifications", "core competencies",
+    "key attributes", "key requirements", "what you'll need", "what you need",
+    "skills & experience", "skills and experience", "experience & skills",
+    "requirements and responsibilities", "roles and responsibilities",
+    "roles & responsibilities", "duties and responsibilities", "job duties",
+    "who you are", "your responsibilities", "your qualifications", "your skills",
+    "profile", "requisites", "prerequisites", "requirements/qualifications",
 }
 
 LEGAL_SUFFIX = re.compile(
@@ -127,17 +140,18 @@ def previous_week_window(today=None):
 # Target Audience extraction
 # --------------------------------------------------------------------------- #
 # GUIDELINE — how the one-line "Target Audience" is chosen from a job's requirement
-# HTML. The requirement is split into blocks (each <p>, <li>, <h*> or <div>). A block
-# is treated as a SECTION HEADER and skipped when ANY of these is true:
-#   • it is an <h1>-<h6> heading; or
-#   • (almost) all its text is bold/underlined — e.g. <strong>Requirements:</strong>.
-#     A leading bold bullet like "<strong>• </strong>" does NOT count as bold text; or
+# HTML. The requirement is split into blocks (each <p>, <li>, <h*> or <div>). Whether a
+# block is a SECTION HEADER is judged from its TEXT, NOT its tag — some employers put
+# real requirement text inside <h3>/<strong> and some put headers in a plain <p>, so the
+# tag is unreliable. A block is treated as a header and skipped when ANY of these hold:
 #   • its text (after removing a trailing "(...)") matches a known header phrase such as
-#     "Education", "Key Qualifications & Skills", "Technical Competencies"; or
-#   • it ends with ":" and is short; or is ALL-CAPS and short; or is only "(...)".
+#     "Education", "Key Qualifications & Skills", "Technical Competencies", "Requirements"; or
+#   • it ends with ":" and is short (e.g. "Skills to be developed for Intern:"); or
+#   • it is ALL-CAPS and short; or is only a "(...)" note; or
+#   • it is a very short (<= 3 words) bold or heading-tag label.
 # The Target Audience is the FIRST remaining block that reads like real content:
-# >= 4 words and containing lower-case letters. Fallbacks progressively relax this so
-# something sensible is always returned. Long lines are trimmed to ~220 characters.
+# >= 4 words and containing lower-case letters. Fallbacks progressively relax this.
+# Long lines are trimmed to ~220 characters; if only headers exist, it shows "—".
 BLOCK_RE = re.compile(r"(?is)<(p|li|h[1-6]|div|tr)\b[^>]*>(.*?)</\1>")
 BOLD_RE = re.compile(r"(?is)<(?:strong|b|u)\b[^>]*>(.*?)</(?:strong|b|u)>")
 MARKER_RE = re.compile(r"^(?:[•●▪‣◦·–—\-\*]+|\(?[a-zA-Z0-9]{1,2}[.\)])\s*")
@@ -188,17 +202,20 @@ def _norm_header(text):
 
 
 def _is_heading(text, is_htag, bold_ratio):
-    if is_htag or bold_ratio >= 0.7:
-        return True
-    if _norm_header(text) in HEADER_PHRASES:
+    # Tag-agnostic: some employers put REAL content inside <h*>/<strong> (and some put
+    # headers in plain <p>), so the tag alone can't decide. Judge by the TEXT; use the
+    # heading tag / bold emphasis only as a tie-breaker for very short labels.
+    if _norm_header(text) in HEADER_PHRASES:            # known section label
         return True
     words = text.split()
     label = text.rstrip().rstrip(":").rstrip()          # text before a trailing colon
     if text.rstrip().endswith(":") and len(label.split()) <= 7:
         return True
     if any(c.isalpha() for c in text) and text.upper() == text and len(words) <= 8:
+        return True                                     # short ALL-CAPS label
+    if re.fullmatch(r"\(.*\)", text.strip()):           # only a "(...)" note
         return True
-    if re.fullmatch(r"\(.*\)", text.strip()):
+    if (is_htag or bold_ratio >= 0.7) and len(words) <= 3:   # tiny emphasised label
         return True
     return False
 
@@ -313,7 +330,8 @@ def build_post(jobs, window):
 
     if other:
         parts += ["", "Other job opportunities:"]
-        for idx, (company, comp_jobs) in enumerate(group_by_company(other), start=1):
+        other_groups = group_by_company(other)[:MAX_OTHER_COMPANIES]
+        for idx, (company, comp_jobs) in enumerate(other_groups, start=1):
             prefix = NUMBER_EMOJI[idx - 1] if idx <= len(NUMBER_EMOJI) else f"{idx}."
             parts += ["", format_company_block(prefix, company, comp_jobs)]
 

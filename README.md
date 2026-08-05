@@ -11,7 +11,7 @@ Every Monday morning ─► GitHub Actions runs the script
                         │
                         ├─ reads new jobs posted LAST WEEK (Mon–Sun)
                         ├─ "Active Employers"  = badged companies (✔️)
-                        ├─ "Other opportunities" = everyone else (1️⃣2️⃣3️⃣…)
+                        ├─ "Other opportunities" = everyone else (1️⃣…🔟, max 10)
                         ├─ formats the post in your house style
                         │
                         └─► sends it to YOUR private Telegram chat as a DRAFT
@@ -102,16 +102,18 @@ links to its job page, so readers can tap straight through to the listing.
 
 Each job's requirement text is split into blocks (paragraphs and bullet points), and the
 script picks the first block that reads like a real requirement — deliberately **skipping
-section headers**. A block is treated as a header (and skipped) when any of these hold:
+section headers**. Whether a block is a header is decided from its **text, not its HTML
+tag**: some employers wrongly put real requirements inside heading/bold tags, and some put
+headers in plain paragraphs, so the tag can't be trusted. A block is skipped as a header
+when any of these hold:
 
-- it is a heading (`<h1>`–`<h6>`) or is entirely **bold/underlined**
-  (e.g. **Requirements:**, **Technical Competencies**);
 - its wording matches a known header phrase — e.g. *Education*, *Qualifications*,
   *Key Qualifications & Skills*, *Technical Competencies*, *Who We Are Looking For*,
   *What We Offer*, *Responsibilities* (a trailing "(…)" is ignored, so
   *Key Qualifications & Skills (…)* is caught too);
 - it ends with a colon and is short (e.g. *Skills to be developed for Intern:*);
-- it is ALL-CAPS and short, or is only a parenthetical "(…)".
+- it is ALL-CAPS and short, or is only a parenthetical "(…)";
+- it is a very short (≤3-word) bold or heading label.
 
 The chosen line is the first **non-header** block with at least 4 words and some lower-case
 letters (long lines are trimmed to ~220 characters). If a job's requirement contains *only*
@@ -128,6 +130,10 @@ To tune it, edit the `HEADER_PHRASES` list near the top of
   point, but always skim them in the draft and tidy any that read oddly.
 - Position titles occasionally include the employer's internal notes (e.g. "(Sup: …)").
   That's from the portal data — delete it in the draft if you don't want it shown.
+- Only jobs **posted in the previous Mon–Sun week** are included (nothing older, nothing
+  from the current week). The "Other job opportunities" list is capped at **10 companies**
+  — change `MAX_OTHER_COMPANIES` near the top of
+  [maritime_monday.py](maritime_monday.py) if you want a different number.
 - The script reads the portal's own embedded data (no fragile scraping). If MaritimeONE
   ever rebuilds their site and the script stops finding jobs, that's the thing to revisit.
 - `--dry-run` (default) prints only; `--send-draft` sends + saves; `--publish` posts the
