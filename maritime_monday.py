@@ -14,14 +14,14 @@ What it does:
      publishes a previously-saved draft to the public channel.
 
 The "Target Audience" line for each job is chosen by a documented rule set — see the
-GUIDELINE comment above target_audience(). Because links use HTML, the saved draft in
-out/latest_draft.txt contains <a href="...">...</a> tags: when hand-editing it, change
-the visible words and leave the tags intact.
+GUIDELINE comment above target_audience(). Both --send-draft and --publish build the post
+fresh from the portal; a draft and its publish happen in the same Mon-Sun week, so they
+produce the same post. Nothing is stored between runs and nothing is written to the repo.
 
 Modes (CLI):
   --dry-run       Build and PRINT the post. No Telegram calls. (default)
-  --send-draft    Build, send the post to your review chat, save it to out/latest_draft.txt
-  --publish       Read out/latest_draft.txt and post it to the channel
+  --send-draft    Build the post and send it to your private review chat.
+  --publish       Build the post and send it to the public channel.
 
 Environment variables:
   TELEGRAM_BOT_TOKEN       Bot token from @BotFather            (needed for --send-draft / --publish)
@@ -29,7 +29,6 @@ Environment variables:
   TELEGRAM_CHANNEL_ID      Channel @username or -100... id      (needed for --publish)
   PORTAL_URL               Override the job listing URL         (optional)
   TIMEZONE                 IANA tz for the week window          (optional, default Asia/Singapore)
-  DRAFT_PATH               Where the draft is saved/read        (optional, default out/latest_draft.txt)
 """
 
 import argparse
@@ -45,7 +44,6 @@ import requests
 
 PORTAL_URL = os.environ.get("PORTAL_URL", "https://www.maritimeone.sg/job-listing")
 TIMEZONE = os.environ.get("TIMEZONE", "Asia/Singapore")
-DRAFT_PATH = os.environ.get("DRAFT_PATH", os.path.join("out", "latest_draft.txt"))
 PORTAL_LINK = "https://www.maritimeone.sg/job-listing"
 JOB_URL = "https://www.maritimeone.sg/job-detail/{}"
 COMPANY_URL = "https://www.maritimeone.sg/company-detail/{}"
@@ -94,6 +92,9 @@ LEGAL_SUFFIX = re.compile(
     r"co\.?,?\s*ltd\.?|company\s+limited|limited|l\.?l\.?p\.?|l\.?l\.?c\.?|inc\.?)\.?\s*$",
     re.IGNORECASE,
 )
+
+# Internal supervisor notes some employers append to a job title, e.g. "(Sup: Serena)".
+SUP_NOTE = re.compile(r"\s*\(\s*sup\b[^)]*\)\s*$", re.IGNORECASE)
 
 
 # --------------------------------------------------------------------------- #
@@ -275,8 +276,9 @@ def esc(text):
 
 
 def job_link(job):
-    """Position title as an <a> link to its job page (plain text if no id)."""
-    title = esc((job.get("jobTitle") or "").strip()) or "—"
+    """Position title (minus internal "(Sup: …)" notes) linked to its job page."""
+    title = SUP_NOTE.sub("", (job.get("jobTitle") or "").strip()).strip()
+    title = esc(title) or "—"
     jid = job.get("jobid")
     return f'<a href="{JOB_URL.format(jid)}">{title}</a>' if jid else title
 
@@ -400,38 +402,26 @@ def main():
     parser = argparse.ArgumentParser(description="Build/send the weekly MaritimeMonday job post.")
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--dry-run", action="store_true", help="Print the post; no Telegram (default).")
-    group.add_argument("--send-draft", action="store_true", help="Send draft to your review chat + save it.")
-    group.add_argument("--publish", action="store_true", help="Publish the saved draft to the channel.")
+    group.add_argument("--send-draft", action="store_true", help="Build the post and send it to your private review chat.")
+    group.add_argument("--publish", action="store_true", help="Build the post and send it to the public channel.")
     args = parser.parse_args()
-
-    if args.publish:
-        if not os.path.exists(DRAFT_PATH):
-            sys.exit(f"Error: no saved draft at {DRAFT_PATH}. Run --send-draft first.")
-        with open(DRAFT_PATH, encoding="utf-8") as fh:
-            draft = fh.read().strip()
-        if not draft:
-            sys.exit("Error: saved draft is empty; nothing to publish.")
-        token = require_env("TELEGRAM_BOT_TOKEN")
-        channel = require_env("TELEGRAM_CHANNEL_ID")
-        telegram_send(token, channel, draft)
-        print(f"Published saved draft to channel {channel}.")
-        return
 
     window = previous_week_window()
     jobs = fetch_jobs()
-    post_text, message, (n_badged, n_other) = build_post(jobs, window)
-    rng = f"{window[0].isoformat()} to {window[1].isoformat()}"
-    print(f"[info] Window {rng}: {n_badged} active-employer job(s), {n_other} other job(s).",
-          file=sys.stderr)
+    _, message, (n_badged, n_other) = build_post(jobs, window)
+    print(f"[info] Window {window[0].isoformat()} to {window[1].isoformat()}: "
+          f"{n_badged} active-employer job(s), {n_other} other job(s).", file=sys.stderr)
 
     if args.send_draft:
         token = require_env("TELEGRAM_BOT_TOKEN")
         review = require_env("TELEGRAM_REVIEW_CHAT_ID")
         telegram_send(token, review, message)
-        os.makedirs(os.path.dirname(DRAFT_PATH) or ".", exist_ok=True)
-        with open(DRAFT_PATH, "w", encoding="utf-8") as fh:
-            fh.write(post_text or "")   # empty file when there were no jobs
-        print(f"Draft sent to review chat {review} and saved to {DRAFT_PATH}.")
+        print(f"Draft sent to review chat {review}.")
+    elif args.publish:
+        token = require_env("TELEGRAM_BOT_TOKEN")
+        channel = require_env("TELEGRAM_CHANNEL_ID")
+        telegram_send(token, channel, message)
+        print(f"Published to channel {channel}.")
     else:
         print(message)
 

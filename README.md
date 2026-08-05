@@ -15,15 +15,15 @@ Every Monday morning ─► GitHub Actions runs the script
                         ├─ formats the post in your house style
                         │
                         └─► sends it to YOUR private Telegram chat as a DRAFT
-                            and saves it to out/latest_draft.txt
 
 You read the draft on your phone.
-  • Happy?  -> run the "MaritimeMonday publish" action -> it posts to the channel.
-  • Want edits? -> edit out/latest_draft.txt on GitHub first, then publish.
+  • Happy? -> run the "MaritimeMonday publish" action -> it rebuilds the same
+              week's post and sends it to the channel.
 ```
 
 Nothing is ever posted to the public channel automatically — publishing is always
-your decision.
+your decision. Nothing is stored between runs; the draft and the published post are
+built from the same week's data, so they match.
 
 ## The weekly rule
 
@@ -68,12 +68,11 @@ That's it. The Monday schedule is already configured.
 ## Using it each week
 
 1. **Monday ~8am (SGT):** you receive the draft in your private Telegram chat.
-2. **Review it.** To change anything, open `out/latest_draft.txt` on GitHub, click
-   the pencil ✏️, edit, and **Commit changes**. The draft contains links written as
-   `<a href="...">Company or Job Title</a>` — edit the **visible words** between `>` and
-   `</a>`, and leave the `<a href="...">` and `</a>` tags alone.
+2. **Review it** in Telegram. The output is auto-formatted (see the rules below); if a
+   line looks off, it's usually a one-word tweak to the script's lists — see "Good to know".
 3. **Publish:** go to the **Actions** tab → **MaritimeMonday publish** → **Run workflow**.
-   The bot posts the (edited) draft to your channel.
+   It rebuilds the same week's post and sends it to your channel. Publishing any day within
+   that same Mon–Sun week produces the same post you reviewed.
 
 You can also trigger the draft early anytime: **Actions → MaritimeMonday draft → Run workflow**.
 
@@ -126,15 +125,17 @@ To tune it, edit the `HEADER_PHRASES` list near the top of
 
 - **Company names** sometimes come in ALL CAPS or with `Pte Ltd` from the portal.
   The script trims `Pte Ltd`-style suffixes; fix any odd casing in the review step.
-- **Target Audience** lines are auto-selected using the rules above — a solid starting
-  point, but always skim them in the draft and tidy any that read oddly.
-- Position titles occasionally include the employer's internal notes (e.g. "(Sup: …)").
-  That's from the portal data — delete it in the draft if you don't want it shown.
+- **Target Audience** lines are auto-selected using the rules above. If one still reads
+  like a header, add that wording to `HEADER_PHRASES` in the script and it won't be picked
+  again. If a job lists no real requirement, the line shows `—`.
+- Internal notes some employers add to a title (e.g. "(Sup: Serena)") are removed
+  automatically.
 - Only jobs **posted in the previous Mon–Sun week** are included (nothing older, nothing
   from the current week). The "Other job opportunities" list is capped at **10 companies**
   — change `MAX_OTHER_COMPANIES` near the top of
   [maritime_monday.py](maritime_monday.py) if you want a different number.
 - The script reads the portal's own embedded data (no fragile scraping). If MaritimeONE
   ever rebuilds their site and the script stops finding jobs, that's the thing to revisit.
-- `--dry-run` (default) prints only; `--send-draft` sends + saves; `--publish` posts the
-  saved draft. The GitHub workflows call the right one for you.
+- `--dry-run` (default) prints the post; `--send-draft` sends it to your review chat;
+  `--publish` sends it to the channel. Both build fresh from the portal — nothing is stored
+  between runs. The GitHub workflows call the right one for you.

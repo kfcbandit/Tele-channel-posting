@@ -1,7 +1,7 @@
 name: MaritimeMonday publish
 
-# Run this manually AFTER you have reviewed (and optionally edited) the draft.
-# It reads out/latest_draft.txt and posts it to your channel.
+# Run this manually AFTER you're happy with the draft you received on Telegram.
+# It rebuilds the same week's post and posts it to your channel.
 
 on:
   workflow_dispatch: {}   # triggered by you from the Actions tab

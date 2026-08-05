@@ -1,7 +1,7 @@
 name: MaritimeMonday draft
 
-# Every Monday, build the post from last week's jobs, send it to your review
-# chat as a draft, and save it to out/latest_draft.txt in the repo.
+# Every Monday, build the post from last week's jobs and send it to your private
+# review chat on Telegram. Nothing is written back to the repo.
 
 on:
   schedule:
@@ -10,9 +10,6 @@ on:
     # (GitHub runs cron in UTC and may delay it a few minutes under load.)
     - cron: "0 0 * * 1"
   workflow_dispatch: {}   # also lets you run it by hand from the Actions tab
-
-permissions:
-  contents: write          # needed to commit the saved draft back to the repo
 
 jobs:
   build-draft:
@@ -27,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Build draft and send it to the review chat
+      - name: Build the draft and send it to the review chat
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_REVIEW_CHAT_ID: ${{ secrets.TELEGRAM_REVIEW_CHAT_ID }}
