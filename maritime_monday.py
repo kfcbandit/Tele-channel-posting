@@ -350,12 +350,12 @@ def build_post(jobs, window, audience_len=AUDIENCE_MAX_LEN):
     ]
 
     if badged:
-        parts += ["", "Active Employers"]
+        parts += ["", "<b>Active Employers</b>"]
         for company, comp_jobs in group_by_company(badged):
             parts += ["", format_company_block("✔️", company, comp_jobs, audience_len, bold_name=True)]
 
     if other:
-        parts += ["", "Other job opportunities:"]
+        parts += ["", "<b>Other job opportunities:</b>"]
         other_groups = group_by_company(other)[:MAX_OTHER_COMPANIES]
         for idx, (company, comp_jobs) in enumerate(other_groups, start=1):
             prefix = NUMBER_EMOJI[idx - 1] if idx <= len(NUMBER_EMOJI) else f"{idx}."
@@ -389,7 +389,8 @@ def build_fitted_post(jobs, window):
 # --------------------------------------------------------------------------- #
 def _starts_block(piece):
     """True if a piece begins a new top-level block (a company entry or a section header)."""
-    if piece.startswith(("✔️", "Active Employers", "Other job opportunities",
+    if piece.startswith(("✔️", "Active Employers", "<b>Active Employers",
+                         "Other job opportunities", "<b>Other job opportunities",
                          "\U0001f30a", "\U0001f4bc", "\U0001f449")):
         return True
     if any(piece.startswith(e) for e in NUMBER_EMOJI):

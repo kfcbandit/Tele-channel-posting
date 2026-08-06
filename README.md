@@ -138,8 +138,9 @@ To tune it, edit the `HEADER_PHRASES` list near the top of
   company's page — and Target Audience lines are shortened as needed. On an unusually heavy
   week it may still split into two. Tune `MAX_POSITIONS_PER_COMPANY` and `AUDIENCE_MAX_LEN`
   in the script to trade length for detail.
-- Active Employers' names are shown in **bold**; every company block ends with an *italic*
-  "Posted:" date (shown as a range if that company's roles went up on different days).
+- The section headers ("Active Employers", "Other job opportunities") and Active Employers'
+  company names are shown in **bold**; every company block ends with an *italic* "Posted:"
+  date (shown as a range if that company's roles went up on different days).
 - The script reads the portal's own embedded data (no fragile scraping). If MaritimeONE
   ever rebuilds their site and the script stops finding jobs, that's the thing to revisit.
 - `--dry-run` (default) prints the post; `--send-draft` sends it to your review chat;
