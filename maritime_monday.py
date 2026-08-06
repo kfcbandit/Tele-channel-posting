@@ -291,10 +291,12 @@ def job_link(job):
     return f'<a href="{JOB_URL.format(jid)}">{title}</a>' if jid else title
 
 
-def format_company_block(prefix, company, jobs, audience_len=AUDIENCE_MAX_LEN):
+def format_company_block(prefix, company, jobs, audience_len=AUDIENCE_MAX_LEN, bold_name=False):
     name = esc(clean_company(company.get("companyName", "")) or "Company")
     cid = company.get("companyid")
     name_html = f'<a href="{COMPANY_URL.format(cid)}">{name}</a>' if cid else name
+    if bold_name:
+        name_html = f"<b>{name_html}</b>"
 
     shown = jobs[:MAX_POSITIONS_PER_COMPANY]
     extra = len(jobs) - len(shown)
@@ -340,7 +342,7 @@ def build_post(jobs, window, audience_len=AUDIENCE_MAX_LEN):
     if badged:
         parts += ["", "Active Employers"]
         for company, comp_jobs in group_by_company(badged):
-            parts += ["", format_company_block("✔️", company, comp_jobs, audience_len)]
+            parts += ["", format_company_block("✔️", company, comp_jobs, audience_len, bold_name=True)]
 
     if other:
         parts += ["", "Other job opportunities:"]
