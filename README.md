@@ -14,16 +14,13 @@ Every Monday morning ─► GitHub Actions runs the script
                         ├─ "Other opportunities" = everyone else (1️⃣…🔟, max 10)
                         ├─ formats the post in your house style
                         │
-                        └─► sends it to YOUR private Telegram chat as a DRAFT
-
-You read the draft on your phone.
-  • Happy? -> run the "MaritimeMonday publish" action -> it rebuilds the same
-              week's post and sends it to the channel.
+                        ├─► DRAFT to your private Telegram chat (a heads-up copy), and
+                        └─► PUBLISH the same post to the channel
 ```
 
-Nothing is ever posted to the public channel automatically — publishing is always
-your decision. Nothing is stored between runs; the draft and the published post are
-built from the same week's data, so they match.
+Both fire automatically every Monday ~08:00 SGT — you can also run either by hand from the
+Actions tab. Nothing is stored between runs; the draft and the published post use the same
+week's data, so they match.
 
 ## The weekly rule
 
@@ -67,14 +64,16 @@ That's it. The Monday schedule is already configured.
 
 ## Using it each week
 
-1. **Monday ~8am (SGT):** you receive the draft in your private Telegram chat.
-2. **Review it** in Telegram. The output is auto-formatted (see the rules below); if a
-   line looks off, it's usually a one-word tweak to the script's lists — see "Good to know".
-3. **Publish:** go to the **Actions** tab → **MaritimeMonday publish** → **Run workflow**.
-   It rebuilds the same week's post and sends it to your channel. Publishing any day within
-   that same Mon–Sun week produces the same post you reviewed.
+It runs **fully automatically**:
 
-You can also trigger the draft early anytime: **Actions → MaritimeMonday draft → Run workflow**.
+1. **Monday ~8am (SGT):** the bot posts the week's jobs to your channel **and** sends you a
+   copy in your private chat.
+2. That's it — no action needed. Because publishing is automatic, the post goes out
+   **unreviewed**, so glance at the private-chat copy and tweak the script's word lists if a
+   line ever reads oddly (see "Good to know").
+
+Run either by hand anytime: **Actions → MaritimeMonday draft** (or **publish**) **→ Run workflow**.
+To pause automatic posting, open **Actions → MaritimeMonday publish** and use **⋯ → Disable workflow**.
 
 ## Preview it locally (optional)
 
