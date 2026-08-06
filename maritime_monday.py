@@ -60,6 +60,14 @@ NUMBER_EMOJI = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣",
 # 1-10 emoji numbering, no "11." overflow). Active Employers (badged) are always shown.
 MAX_OTHER_COMPANIES = 10
 
+# Keep the whole post inside ONE Telegram message (Telegram's hard limit is 4096 visible
+# characters). Each company lists at most MAX_POSITIONS_PER_COMPANY roles (the rest become
+# a "+N more" link), and each Target Audience line starts at AUDIENCE_MAX_LEN characters
+# and is auto-shortened further if the post is still too long for one message.
+MAX_POSITIONS_PER_COMPANY = 3
+AUDIENCE_MAX_LEN = 90
+TELEGRAM_LIMIT = 4096
+
 # Section-header phrases that must NEVER be used as a Target Audience line. Matched
 # case-insensitively against a normalised line (trailing "(...)" and ":" removed).
 HEADER_PHRASES = {
@@ -283,32 +291,36 @@ def job_link(job):
     return f'<a href="{JOB_URL.format(jid)}">{title}</a>' if jid else title
 
 
-def format_company_block(prefix, company, jobs):
+def format_company_block(prefix, company, jobs, audience_len=AUDIENCE_MAX_LEN):
     name = esc(clean_company(company.get("companyName", "")) or "Company")
     cid = company.get("companyid")
     name_html = f'<a href="{COMPANY_URL.format(cid)}">{name}</a>' if cid else name
 
+    shown = jobs[:MAX_POSITIONS_PER_COMPANY]
+    extra = len(jobs) - len(shown)
+    if extra:
+        label = f"➕ {extra} more role(s) at this company"
+        more = [f'<a href="{COMPANY_URL.format(cid)}">{label}</a>' if cid else label]
+    else:
+        more = []
+
+    def audience(job):
+        return esc(target_audience(job.get("requirement", ""), audience_len)) or "—"
+
     out = [f"{prefix} {name_html}", ""]
-    if len(jobs) == 1:
-        out += [
-            "• Position(s):",
-            job_link(jobs[0]),
-            "",
-            "• Target Audience:",
-            esc(target_audience(jobs[0].get("requirement", ""))) or "—",
-        ]
+    if len(shown) == 1:
+        out += ["• Position(s):", job_link(shown[0])] + more
+        out += ["", "• Target Audience:", audience(shown[0])]
     else:
         out.append("• Position(s):")
-        for i, job in enumerate(jobs):
-            out.append(f"({chr(97 + i)}) {job_link(job)}")
-        out.append("")
-        out.append("• Target Audience:")
-        for i, job in enumerate(jobs):
-            out.append(f"({chr(97 + i)}) {esc(target_audience(job.get('requirement', ''))) or '—'}")
+        out += [f"({chr(97 + i)}) {job_link(job)}" for i, job in enumerate(shown)]
+        out += more
+        out += ["", "• Target Audience:"]
+        out += [f"({chr(97 + i)}) {audience(job)}" for i, job in enumerate(shown)]
     return "\n".join(out)
 
 
-def build_post(jobs, window):
+def build_post(jobs, window, audience_len=AUDIENCE_MAX_LEN):
     start, end = window
     recent = [j for j in jobs if (d := job_date(j)) and start <= d <= end]
 
@@ -328,14 +340,14 @@ def build_post(jobs, window):
     if badged:
         parts += ["", "Active Employers"]
         for company, comp_jobs in group_by_company(badged):
-            parts += ["", format_company_block("✔️", company, comp_jobs)]
+            parts += ["", format_company_block("✔️", company, comp_jobs, audience_len)]
 
     if other:
         parts += ["", "Other job opportunities:"]
         other_groups = group_by_company(other)[:MAX_OTHER_COMPANIES]
         for idx, (company, comp_jobs) in enumerate(other_groups, start=1):
             prefix = NUMBER_EMOJI[idx - 1] if idx <= len(NUMBER_EMOJI) else f"{idx}."
-            parts += ["", format_company_block(prefix, company, comp_jobs)]
+            parts += ["", format_company_block(prefix, company, comp_jobs, audience_len)]
 
     parts += [
         "",
@@ -345,26 +357,49 @@ def build_post(jobs, window):
     return text, text, (len(badged), len(other))
 
 
+def visible_len(text):
+    """Length Telegram enforces: the visible text after HTML <a> tags are parsed out."""
+    return len(re.sub(r'<a href="[^"]*">', "", text).replace("</a>", ""))
+
+
+def build_fitted_post(jobs, window):
+    """Build the post, shortening Target Audience lines so it fits one message when it can."""
+    text, message, counts = build_post(jobs, window, AUDIENCE_MAX_LEN)
+    for audience_len in (70, 55, 45):
+        if visible_len(message) <= TELEGRAM_LIMIT - 40:
+            break
+        text, message, counts = build_post(jobs, window, audience_len)
+    return text, message, counts
+
+
 # --------------------------------------------------------------------------- #
 # Telegram
 # --------------------------------------------------------------------------- #
-def split_message(text, limit=4000):
-    if len(text) <= limit:
+def _top_level_blocks(text):
+    """Split into whole top-level blocks, keeping each company intact. The Position(s) and
+    Target Audience sub-blocks start with "• " and are merged back into their company."""
+    blocks = []
+    for piece in text.split("\n\n"):
+        if piece.startswith("• ") and blocks:
+            blocks[-1] += "\n\n" + piece
+        else:
+            blocks.append(piece)
+    return blocks
+
+
+def split_message(text, limit=TELEGRAM_LIMIT - 40):
+    """Fewest messages that each stay within Telegram's visible-char limit, never splitting
+    a company block (so an HTML link is never cut in half)."""
+    if visible_len(text) <= limit:
         return [text]
     chunks, current = [], ""
-    for block in text.split("\n\n"):
-        addition = ("\n\n" if current else "") + block
-        if len(current) + len(addition) > limit:
-            if current:
-                chunks.append(current)
-                current = ""
-            if len(block) > limit:
-                for i in range(0, len(block), limit):
-                    chunks.append(block[i:i + limit])
-            else:
-                current = block
+    for block in _top_level_blocks(text):
+        candidate = f"{current}\n\n{block}" if current else block
+        if current and visible_len(candidate) > limit:
+            chunks.append(current)
+            current = block
         else:
-            current += addition
+            current = candidate
     if current:
         chunks.append(current)
     return chunks
@@ -408,7 +443,7 @@ def main():
 
     window = previous_week_window()
     jobs = fetch_jobs()
-    _, message, (n_badged, n_other) = build_post(jobs, window)
+    _, message, (n_badged, n_other) = build_fitted_post(jobs, window)
     print(f"[info] Window {window[0].isoformat()} to {window[1].isoformat()}: "
           f"{n_badged} active-employer job(s), {n_other} other job(s).", file=sys.stderr)
 

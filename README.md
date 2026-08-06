@@ -134,6 +134,11 @@ To tune it, edit the `HEADER_PHRASES` list near the top of
   from the current week). The "Other job opportunities" list is capped at **10 companies**
   — change `MAX_OTHER_COMPANIES` near the top of
   [maritime_monday.py](maritime_monday.py) if you want a different number.
+- The post is trimmed to fit **one Telegram message** (Telegram's hard limit is 4,096
+  characters). Each company shows up to **3 roles** — extras become a "➕ N more" link to the
+  company's page — and Target Audience lines are shortened as needed. On an unusually heavy
+  week it may still split into two. Tune `MAX_POSITIONS_PER_COMPANY` and `AUDIENCE_MAX_LEN`
+  in the script to trade length for detail.
 - The script reads the portal's own embedded data (no fragile scraping). If MaritimeONE
   ever rebuilds their site and the script stops finding jobs, that's the thing to revisit.
 - `--dry-run` (default) prints the post; `--send-draft` sends it to your review chat;
