@@ -132,6 +132,11 @@ def job_date(job):
         return None
 
 
+def fmt_date(d):
+    """Format a date like '1 Aug 2026' (no leading zero, cross-platform)."""
+    return f"{d.day} {d.strftime('%b %Y')}"
+
+
 # --------------------------------------------------------------------------- #
 # Date window: previous Monday-Sunday
 # --------------------------------------------------------------------------- #
@@ -319,6 +324,11 @@ def format_company_block(prefix, company, jobs, audience_len=AUDIENCE_MAX_LEN, b
         out += more
         out += ["", "• Target Audience:"]
         out += [f"({chr(97 + i)}) {audience(job)}" for i, job in enumerate(shown)]
+
+    dates = sorted({d for job in jobs if (d := job_date(job))})
+    if dates:
+        span = fmt_date(dates[0]) if dates[0] == dates[-1] else f"{fmt_date(dates[0])} – {fmt_date(dates[-1])}"
+        out += ["", f"<i>Posted: {span}</i>"]
     return "\n".join(out)
 
 
@@ -360,8 +370,8 @@ def build_post(jobs, window, audience_len=AUDIENCE_MAX_LEN):
 
 
 def visible_len(text):
-    """Length Telegram enforces: the visible text after HTML <a> tags are parsed out."""
-    return len(re.sub(r'<a href="[^"]*">', "", text).replace("</a>", ""))
+    """Length Telegram enforces: the visible text after all HTML tags are parsed out."""
+    return len(re.sub(r"<[^>]+>", "", text))
 
 
 def build_fitted_post(jobs, window):
@@ -377,12 +387,22 @@ def build_fitted_post(jobs, window):
 # --------------------------------------------------------------------------- #
 # Telegram
 # --------------------------------------------------------------------------- #
+def _starts_block(piece):
+    """True if a piece begins a new top-level block (a company entry or a section header)."""
+    if piece.startswith(("✔️", "Active Employers", "Other job opportunities",
+                         "\U0001f30a", "\U0001f4bc", "\U0001f449")):
+        return True
+    if any(piece.startswith(e) for e in NUMBER_EMOJI):
+        return True
+    return bool(re.match(r"\d+\.\s", piece))          # overflow numbering "11. ", "12. "
+
+
 def _top_level_blocks(text):
-    """Split into whole top-level blocks, keeping each company intact. The Position(s) and
-    Target Audience sub-blocks start with "• " and are merged back into their company."""
+    """Split into whole top-level blocks, keeping each company intact — its Position(s),
+    Target Audience and Posted lines all stay merged with the company name."""
     blocks = []
     for piece in text.split("\n\n"):
-        if piece.startswith("• ") and blocks:
+        if blocks and not _starts_block(piece):
             blocks[-1] += "\n\n" + piece
         else:
             blocks.append(piece)
