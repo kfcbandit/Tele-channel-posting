@@ -5,7 +5,8 @@ dump_month_jobs.py — companion to maritime_monday.py
 Fetches the MaritimeONE job portal the same way maritime_monday.py does
 (reads the embedded Inertia "data-page" JSON — no fragile HTML scraping),
 but instead of building a Telegram post for last week, it dumps EVERY job
-posted so far this calendar month into a clean JSON file.
+posted — or extended by the employer — so far this calendar month into a
+clean JSON file. Extended posts are flagged with "extended": true.
 
 Usage:
     pip install -r requirements.txt   # if you haven't already, from the repo root
@@ -16,10 +17,11 @@ Output:
     current folder — send that file back to Claude to turn into HTML.
 """
 
+import calendar
 import html as html_lib
 import json
 import re
-from datetime import date
+from datetime import date, timedelta
 
 import requests
 
@@ -46,12 +48,50 @@ def fetch_jobs():
     return jobs
 
 
-def job_date(job):
-    raw = job.get("created_yyyy_mm_dd") or (job.get("created") or "")[:10]
+def parse_iso(raw):
     try:
-        return date.fromisoformat(raw)
+        return date.fromisoformat((raw or "")[:10])
     except (ValueError, TypeError):
         return None
+
+
+def created_date(job):
+    return parse_iso(job.get("created_yyyy_mm_dd") or job.get("created"))
+
+
+def subtract_duration(d, duration):
+    """Step back from date d by a listing duration like '1 Month', '3 Months', '14 Days'."""
+    m = re.match(r"\s*(\d+)\s*(day|week|month|year)", (duration or "").lower())
+    if not m:
+        return None
+    n, unit = int(m.group(1)), m.group(2)
+    if unit == "day":
+        return d - timedelta(days=n)
+    if unit == "week":
+        return d - timedelta(weeks=n)
+    months = n * 12 if unit == "year" else n
+    y, mo = divmod(d.year * 12 + d.month - 1 - months, 12)
+    mo += 1
+    return d.replace(year=y, month=mo, day=min(d.day, calendar.monthrange(y, mo)[1]))
+
+
+def job_date(job):
+    """Date the listing last went live: its original post date, or the date the
+    employer last extended it.
+
+    When a post is extended the portal keeps the original `created` date but
+    resets the expiry to (extension date + listing duration). So we work the
+    extension date back out as expiry - duration, falling back to `modified`
+    if the duration can't be parsed. Never earlier than the original post.
+    """
+    created = created_date(job)
+    expiry = parse_iso(job.get("expiry_yyyy_mm_dd"))
+    relisted = subtract_duration(expiry, job.get("duration")) if expiry else None
+    if relisted is None:
+        relisted = parse_iso(job.get("modified"))
+    if created and relisted:
+        return max(created, relisted)
+    return created or relisted
 
 
 def clean(text):
@@ -69,6 +109,7 @@ def main():
         d = job_date(job)
         if not d or d < month_start or d > today:
             continue
+        created = created_date(job)
         comp = job.get("company") or {}
         cid = comp.get("companyid")
         out.append({
@@ -78,6 +119,10 @@ def main():
             "company_url": COMPANY_URL.format(cid) if cid else None,
             "active_employer": bool(comp.get("hasBadge")),
             "posted": d.isoformat(),
+            "originally_posted": created.isoformat() if created else None,
+            # True only when the post would have been missed without the
+            # extension, i.e. it was first posted before this month.
+            "extended": bool(created and created < month_start),
         })
 
     out.sort(key=lambda j: j["posted"], reverse=True)
@@ -87,8 +132,10 @@ def main():
         json.dump(out, f, indent=2)
 
     n_active = sum(1 for j in out if j["active_employer"])
-    print(f"Wrote {len(out)} job(s) posted {month_start.isoformat()}–{today.isoformat()} "
-          f"to {filename} ({n_active} from Active Employers, {len(out) - n_active} other).")
+    n_extended = sum(1 for j in out if j["extended"])
+    print(f"Wrote {len(out)} job(s) posted or extended {month_start.isoformat()}–{today.isoformat()} "
+          f"to {filename} ({n_active} from Active Employers, {len(out) - n_active} other; "
+          f"{n_extended} were extensions of older posts).")
 
 
 if __name__ == "__main__":
