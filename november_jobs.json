@@ -1,11 +1,43 @@
 [
   {
+    "title": "Junior Oil Broker",
+    "job_url": "https://www.maritimeone.sg/job-detail/5BWUU69NCHDJ32RFQI81",
+    "company": "Arrow Asia Shipbrokers (Pte.) Limited",
+    "company_url": "https://www.maritimeone.sg/company-detail/ZZPSYONSEYJT7ARCRT29",
+    "active_employer": true,
+    "posted": "2026-11-23",
+    "originally_posted": "2026-11-23",
+    "extended": false
+  },
+  {
+    "title": "Executive, QHSE",
+    "job_url": "https://www.maritimeone.sg/job-detail/2WFU519FB6EYAM8PJCQ3",
+    "company": "Vallianz Offshore Marine Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/DPRT1385C6O0NN0WFO32",
+    "active_employer": false,
+    "posted": "2026-11-23",
+    "originally_posted": "2026-10-06",
+    "extended": true
+  },
+  {
     "title": "Intern, Technical Services (Purchasing)",
     "job_url": "https://www.maritimeone.sg/job-detail/3BPR5B2761FSEGR3TWB5",
     "company": "Eastern Pacific Shipping Pte. Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/FCC82RCN5JLYQNEBW1BB",
     "active_employer": true,
-    "posted": "2026-11-20"
+    "posted": "2026-11-20",
+    "originally_posted": "2026-11-20",
+    "extended": false
+  },
+  {
+    "title": "Sales Executive",
+    "job_url": "https://www.maritimeone.sg/job-detail/BO6SMOLTBB30XK9PWS58",
+    "company": "Jowa (S) Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/Q55QEC55XXWI5U7LQPP3",
+    "active_employer": true,
+    "posted": "2026-11-20",
+    "originally_posted": "2025-12-02",
+    "extended": true
   },
   {
     "title": "Intern",
@@ -13,39 +45,9 @@
     "company": "Norden Shipping Singapore Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/95UURGX7LP6O6Q4BUXL9",
     "active_employer": false,
-    "posted": "2026-11-20"
-  },
-  {
-    "title": "Engineer Superintendent for Tanker Fleet",
-    "job_url": "https://www.maritimeone.sg/job-detail/BRWF4P9KCFHX1WUQWGJ1",
-    "company": "Goodwood Ship Management Pte Ltd",
-    "company_url": "https://www.maritimeone.sg/company-detail/UUR12K252NUA8ZOIABE4",
-    "active_employer": true,
-    "posted": "2026-11-19"
-  },
-  {
-    "title": "Procurement Officer",
-    "job_url": "https://www.maritimeone.sg/job-detail/16O07POR6U8W0B40GOS0",
-    "company": "Goodwood Ship Management Pte Ltd",
-    "company_url": "https://www.maritimeone.sg/company-detail/UUR12K252NUA8ZOIABE4",
-    "active_employer": true,
-    "posted": "2026-11-19"
-  },
-  {
-    "title": "Shipping & Operation Intern",
-    "job_url": "https://www.maritimeone.sg/job-detail/3H4XRYWJ9YZOY7TOKY02",
-    "company": "COSCO SHIPPING SPECIALIZED CARRIERS (SOUTHEAST ASIA) PTE. LTD.",
-    "company_url": "https://www.maritimeone.sg/company-detail/RPPRGE22SWLQYIZ6PYR2",
-    "active_employer": false,
-    "posted": "2026-11-19"
-  },
-  {
-    "title": "Finance Intern",
-    "job_url": "https://www.maritimeone.sg/job-detail/J2XYK883UYH19YR60Q48",
-    "company": "COSCO SHIPPING SPECIALIZED CARRIERS (SOUTHEAST ASIA) PTE. LTD.",
-    "company_url": "https://www.maritimeone.sg/company-detail/RPPRGE22SWLQYIZ6PYR2",
-    "active_employer": false,
-    "posted": "2026-11-19"
+    "posted": "2026-11-20",
+    "originally_posted": "2026-11-20",
+    "extended": false
   },
   {
     "title": "Commercial & Project Support Intern",
@@ -53,23 +55,79 @@
     "company": "M3 Marine Group Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/80T12KMSPPMQYZXP0QU2",
     "active_employer": true,
-    "posted": "2026-11-18"
+    "posted": "2026-11-19",
+    "originally_posted": "2026-11-18",
+    "extended": false
   },
   {
-    "title": "EXECUTIVE, OPERATIONS",
-    "job_url": "https://www.maritimeone.sg/job-detail/AI9LFAJ7WDP1PP790DB6",
-    "company": "X-Press Feeders",
-    "company_url": "https://www.maritimeone.sg/company-detail/0OA337686B27SNO5J8B9",
+    "title": "Engineer Superintendent for Tanker Fleet",
+    "job_url": "https://www.maritimeone.sg/job-detail/BRWF4P9KCFHX1WUQWGJ1",
+    "company": "Goodwood Ship Management Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/UUR12K252NUA8ZOIABE4",
     "active_employer": true,
-    "posted": "2026-11-18"
+    "posted": "2026-11-19",
+    "originally_posted": "2026-11-19",
+    "extended": false
   },
   {
-    "title": "Corporate Key Account Executive (IFF)",
-    "job_url": "https://www.maritimeone.sg/job-detail/IB4BPJ5F0MU2RYL9D932",
-    "company": "Mediterranean Shipping Co. (Switzerland) Asia Regional Office Pte Ltd",
-    "company_url": "https://www.maritimeone.sg/company-detail/F0QDMJ3CY620UUS90KP2",
+    "title": "Procurement Officer",
+    "job_url": "https://www.maritimeone.sg/job-detail/16O07POR6U8W0B40GOS0",
+    "company": "Goodwood Ship Management Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/UUR12K252NUA8ZOIABE4",
     "active_employer": true,
-    "posted": "2026-11-18"
+    "posted": "2026-11-19",
+    "originally_posted": "2026-11-19",
+    "extended": false
+  },
+  {
+    "title": "Assistant Director (Research)",
+    "job_url": "https://www.maritimeone.sg/job-detail/HDR0R5WM9YUHGB1S2ZB7",
+    "company": "ReCAAP Information Sharing Centre (ISC)",
+    "company_url": "https://www.maritimeone.sg/company-detail/9RURLIPDXX0RSNIC8Q63",
+    "active_employer": true,
+    "posted": "2026-11-19",
+    "originally_posted": "2026-08-19",
+    "extended": true
+  },
+  {
+    "title": "Specialist (Research)",
+    "job_url": "https://www.maritimeone.sg/job-detail/4TI492KQQK99R6UASSO1",
+    "company": "ReCAAP Information Sharing Centre (ISC)",
+    "company_url": "https://www.maritimeone.sg/company-detail/9RURLIPDXX0RSNIC8Q63",
+    "active_employer": true,
+    "posted": "2026-11-19",
+    "originally_posted": "2026-08-19",
+    "extended": true
+  },
+  {
+    "title": "Manager (Research)",
+    "job_url": "https://www.maritimeone.sg/job-detail/1SKM7IZQI04HMU6KIGG2",
+    "company": "ReCAAP Information Sharing Centre (ISC)",
+    "company_url": "https://www.maritimeone.sg/company-detail/9RURLIPDXX0RSNIC8Q63",
+    "active_employer": true,
+    "posted": "2026-11-19",
+    "originally_posted": "2026-08-19",
+    "extended": true
+  },
+  {
+    "title": "Shipping & Operation Intern",
+    "job_url": "https://www.maritimeone.sg/job-detail/3H4XRYWJ9YZOY7TOKY02",
+    "company": "COSCO SHIPPING SPECIALIZED CARRIERS (SOUTHEAST ASIA) PTE. LTD.",
+    "company_url": "https://www.maritimeone.sg/company-detail/RPPRGE22SWLQYIZ6PYR2",
+    "active_employer": false,
+    "posted": "2026-11-19",
+    "originally_posted": "2026-11-19",
+    "extended": false
+  },
+  {
+    "title": "Finance Intern",
+    "job_url": "https://www.maritimeone.sg/job-detail/J2XYK883UYH19YR60Q48",
+    "company": "COSCO SHIPPING SPECIALIZED CARRIERS (SOUTHEAST ASIA) PTE. LTD.",
+    "company_url": "https://www.maritimeone.sg/company-detail/RPPRGE22SWLQYIZ6PYR2",
+    "active_employer": false,
+    "posted": "2026-11-19",
+    "originally_posted": "2026-11-19",
+    "extended": false
   },
   {
     "title": "Internship Research",
@@ -77,7 +135,9 @@
     "company": "BROKERS RESEARCH SERVICES (SINGAPORE)PTE LTD",
     "company_url": "https://www.maritimeone.sg/company-detail/1RSRS07QNPGSJTQQ4601",
     "active_employer": false,
-    "posted": "2026-11-18"
+    "posted": "2026-11-19",
+    "originally_posted": "2026-11-18",
+    "extended": false
   },
   {
     "title": "Operations and Chartering Executive Intern",
@@ -85,7 +145,39 @@
     "company": "Dava Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/RA0M5MAG8J9EL6X5X9W3",
     "active_employer": false,
-    "posted": "2026-11-18"
+    "posted": "2026-11-19",
+    "originally_posted": "2026-11-18",
+    "extended": false
+  },
+  {
+    "title": "EXECUTIVE, OPERATIONS",
+    "job_url": "https://www.maritimeone.sg/job-detail/AI9LFAJ7WDP1PP790DB6",
+    "company": "X-Press Feeders",
+    "company_url": "https://www.maritimeone.sg/company-detail/0OA337686B27SNO5J8B9",
+    "active_employer": true,
+    "posted": "2026-11-18",
+    "originally_posted": "2026-11-18",
+    "extended": false
+  },
+  {
+    "title": "EXECUTIVE, REVENUE PROCESS \u2013 SLOT SETTLEMENT (1 YEAR CONTRACT)",
+    "job_url": "https://www.maritimeone.sg/job-detail/H3QD1CQ5JDORZDX6HJD5",
+    "company": "X-Press Feeders",
+    "company_url": "https://www.maritimeone.sg/company-detail/0OA337686B27SNO5J8B9",
+    "active_employer": true,
+    "posted": "2026-11-18",
+    "originally_posted": "2026-09-22",
+    "extended": true
+  },
+  {
+    "title": "Corporate Key Account Executive (IFF)",
+    "job_url": "https://www.maritimeone.sg/job-detail/IB4BPJ5F0MU2RYL9D932",
+    "company": "Mediterranean Shipping Co. (Switzerland) Asia Regional Office Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/F0QDMJ3CY620UUS90KP2",
+    "active_employer": true,
+    "posted": "2026-11-18",
+    "originally_posted": "2026-11-18",
+    "extended": false
   },
   {
     "title": "Vessel Fleet Management Coordinator",
@@ -93,7 +185,9 @@
     "company": "Coens Energy Pte. Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/815SEG202Q29YA91Z3R6",
     "active_employer": false,
-    "posted": "2026-11-18"
+    "posted": "2026-11-18",
+    "originally_posted": "2026-11-18",
+    "extended": false
   },
   {
     "title": "Intern, Line Management (Min. 3 months)",
@@ -101,7 +195,9 @@
     "company": "X-Press Feeders",
     "company_url": "https://www.maritimeone.sg/company-detail/0OA337686B27SNO5J8B9",
     "active_employer": true,
-    "posted": "2026-11-17"
+    "posted": "2026-11-17",
+    "originally_posted": "2026-11-17",
+    "extended": false
   },
   {
     "title": "Institutional Banking Group Relationship Manager (Shipping Industry)",
@@ -109,7 +205,9 @@
     "company": "DBS",
     "company_url": "https://www.maritimeone.sg/company-detail/4KH2NMI5BH97TEM6XIS3",
     "active_employer": false,
-    "posted": "2026-11-17"
+    "posted": "2026-11-17",
+    "originally_posted": "2026-11-17",
+    "extended": false
   },
   {
     "title": "Plan review Surveyor",
@@ -117,7 +215,9 @@
     "company": "China Classification Society, Singapore Branch",
     "company_url": "https://www.maritimeone.sg/company-detail/M98IZ023XU4GUGFROKR3",
     "active_employer": false,
-    "posted": "2026-11-17"
+    "posted": "2026-11-17",
+    "originally_posted": "2026-11-17",
+    "extended": false
   },
   {
     "title": "Shipping Operations Intern",
@@ -125,7 +225,9 @@
     "company": "Ocean Network Express (Singapore) Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/QKCCIVVB0D8KWKN4IPN1",
     "active_employer": false,
-    "posted": "2026-11-17"
+    "posted": "2026-11-17",
+    "originally_posted": "2026-11-17",
+    "extended": false
   },
   {
     "title": "Bunker Clerk / Cargo Officer",
@@ -133,7 +235,9 @@
     "company": "Coens Energy Pte. Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/815SEG202Q29YA91Z3R6",
     "active_employer": false,
-    "posted": "2026-11-17"
+    "posted": "2026-11-17",
+    "originally_posted": "2026-11-17",
+    "extended": false
   },
   {
     "title": "Marine Superintendent",
@@ -141,7 +245,9 @@
     "company": "Coens Energy Pte. Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/815SEG202Q29YA91Z3R6",
     "active_employer": false,
-    "posted": "2026-11-17"
+    "posted": "2026-11-17",
+    "originally_posted": "2026-11-17",
+    "extended": false
   },
   {
     "title": "Marine Insurance Claim Executive \u2013 for handling Vessel Insurance policies, Claims and Ship Registration",
@@ -149,7 +255,9 @@
     "company": "Goodwood Ship Management Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/UUR12K252NUA8ZOIABE4",
     "active_employer": true,
-    "posted": "2026-11-16"
+    "posted": "2026-11-16",
+    "originally_posted": "2026-11-16",
+    "extended": false
   },
   {
     "title": "Marine Insurance Claim Executive \u2013 for handling Vessel Insurance policies, Claims and Ship Registration",
@@ -157,7 +265,9 @@
     "company": "Goodwood Ship Management Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/UUR12K252NUA8ZOIABE4",
     "active_employer": true,
-    "posted": "2026-11-16"
+    "posted": "2026-11-16",
+    "originally_posted": "2026-11-16",
+    "extended": false
   },
   {
     "title": "Crewing Officer",
@@ -165,7 +275,9 @@
     "company": "KST MARITIME PTE. LTD.",
     "company_url": "https://www.maritimeone.sg/company-detail/F708FZH31P9TDLEB9PI7",
     "active_employer": true,
-    "posted": "2026-11-16"
+    "posted": "2026-11-16",
+    "originally_posted": "2026-11-16",
+    "extended": false
   },
   {
     "title": "Crewing Officer",
@@ -173,7 +285,9 @@
     "company": "KST MARITIME PTE. LTD.",
     "company_url": "https://www.maritimeone.sg/company-detail/F708FZH31P9TDLEB9PI7",
     "active_employer": true,
-    "posted": "2026-11-16"
+    "posted": "2026-11-16",
+    "originally_posted": "2026-11-16",
+    "extended": false
   },
   {
     "title": "SERVICE ENGINEER",
@@ -181,7 +295,9 @@
     "company": "KORINDO ENERGY (SINGAPORE) PTE LTD",
     "company_url": "https://www.maritimeone.sg/company-detail/BCU0M1U2S0XGD4Y0C4L0",
     "active_employer": false,
-    "posted": "2026-11-16"
+    "posted": "2026-11-16",
+    "originally_posted": "2026-11-16",
+    "extended": false
   },
   {
     "title": "Project Engineer",
@@ -189,7 +305,9 @@
     "company": "KORINDO ENERGY (SINGAPORE) PTE LTD",
     "company_url": "https://www.maritimeone.sg/company-detail/BCU0M1U2S0XGD4Y0C4L0",
     "active_employer": false,
-    "posted": "2026-11-16"
+    "posted": "2026-11-16",
+    "originally_posted": "2026-11-16",
+    "extended": false
   },
   {
     "title": "Senior/Sales Support Executive",
@@ -197,7 +315,9 @@
     "company": "KORINDO ENERGY (SINGAPORE) PTE LTD",
     "company_url": "https://www.maritimeone.sg/company-detail/BCU0M1U2S0XGD4Y0C4L0",
     "active_employer": false,
-    "posted": "2026-11-16"
+    "posted": "2026-11-16",
+    "originally_posted": "2026-11-16",
+    "extended": false
   },
   {
     "title": "Intermodal Intern",
@@ -205,7 +325,9 @@
     "company": "CMA CGM Group",
     "company_url": "https://www.maritimeone.sg/company-detail/K4NNIEL9R1SYXGPDLPL5",
     "active_employer": false,
-    "posted": "2026-11-12"
+    "posted": "2026-11-12",
+    "originally_posted": "2026-11-12",
+    "extended": false
   },
   {
     "title": "Process & Performance Manager",
@@ -213,7 +335,9 @@
     "company": "SWIRE SHIPPING PTE. LTD.",
     "company_url": "https://www.maritimeone.sg/company-detail/ZJ8ZIYIP34CI5DOEEY23",
     "active_employer": false,
-    "posted": "2026-11-12"
+    "posted": "2026-11-12",
+    "originally_posted": "2026-11-12",
+    "extended": false
   },
   {
     "title": "Post Fixtures Executive (6 months contract)",
@@ -221,7 +345,9 @@
     "company": "SWIRE SHIPPING PTE. LTD.",
     "company_url": "https://www.maritimeone.sg/company-detail/ZJ8ZIYIP34CI5DOEEY23",
     "active_employer": false,
-    "posted": "2026-11-12"
+    "posted": "2026-11-12",
+    "originally_posted": "2026-11-12",
+    "extended": false
   },
   {
     "title": "Marine Insurance Intern",
@@ -229,7 +355,19 @@
     "company": "Purus Tech Pte Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/L5I030NB2XKR8RRK5PC8",
     "active_employer": true,
-    "posted": "2026-11-11"
+    "posted": "2026-11-11",
+    "originally_posted": "2026-11-11",
+    "extended": false
+  },
+  {
+    "title": "Intern, Global NVO Key Account Management (Region Asia)",
+    "job_url": "https://www.maritimeone.sg/job-detail/LH4XPHI4AAGQ18PETRC8",
+    "company": "Hapag-Lloyd Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/N3TK35SO3M1OFFN1TTT1",
+    "active_employer": false,
+    "posted": "2026-11-11",
+    "originally_posted": "2026-09-10",
+    "extended": true
   },
   {
     "title": "2027 Shipbroker Trainee - Singapore",
@@ -237,7 +375,29 @@
     "company": "MB Shipbrokers Asia Limited",
     "company_url": "https://www.maritimeone.sg/company-detail/YJPBSJOEIFS8OGDK6OK6",
     "active_employer": false,
-    "posted": "2026-11-11"
+    "posted": "2026-11-11",
+    "originally_posted": "2026-11-11",
+    "extended": false
+  },
+  {
+    "title": "Intern, Data Analysis and Process Simulation for Maritime Carbon Capture",
+    "job_url": "https://www.maritimeone.sg/job-detail/N2MXBCWK1FMXUYDNXYG0",
+    "company": "PaxOcean Singapore Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/1SGOCE9M6879LQXU0Q74",
+    "active_employer": false,
+    "posted": "2026-11-11",
+    "originally_posted": "2026-09-18",
+    "extended": true
+  },
+  {
+    "title": "Intern, Commercial (Business Analysis)",
+    "job_url": "https://www.maritimeone.sg/job-detail/ULYDLC2N2QYK52I5X7M0",
+    "company": "PaxOcean Singapore Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/1SGOCE9M6879LQXU0Q74",
+    "active_employer": false,
+    "posted": "2026-11-11",
+    "originally_posted": "2026-08-28",
+    "extended": true
   },
   {
     "title": "Regional HR Intern",
@@ -245,7 +405,9 @@
     "company": "CMA CGM Group",
     "company_url": "https://www.maritimeone.sg/company-detail/K4NNIEL9R1SYXGPDLPL5",
     "active_employer": false,
-    "posted": "2026-11-10"
+    "posted": "2026-11-10",
+    "originally_posted": "2026-11-10",
+    "extended": false
   },
   {
     "title": "Shipbroker",
@@ -253,7 +415,9 @@
     "company": "Eastport Maritime Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/03213PZS4NQCG88ZMSWK",
     "active_employer": true,
-    "posted": "2026-11-06"
+    "posted": "2026-11-06",
+    "originally_posted": "2026-11-06",
+    "extended": false
   },
   {
     "title": "Management Associate Programme (Vessel Operations)",
@@ -261,7 +425,9 @@
     "company": "Cyan Vessel Operations Asia Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/A1E1GAL7O9A4BFTLC2K5",
     "active_employer": false,
-    "posted": "2026-11-06"
+    "posted": "2026-11-06",
+    "originally_posted": "2026-11-06",
+    "extended": false
   },
   {
     "title": "HR/Admin Executive",
@@ -269,7 +435,9 @@
     "company": "Hai Soon Ship Management Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/EYCF1413FC8BIXPI92K4",
     "active_employer": false,
-    "posted": "2026-11-06"
+    "posted": "2026-11-06",
+    "originally_posted": "2026-11-06",
+    "extended": false
   },
   {
     "title": "Crewing Executive",
@@ -277,7 +445,19 @@
     "company": "Hai Soon Ship Management Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/EYCF1413FC8BIXPI92K4",
     "active_employer": false,
-    "posted": "2026-11-06"
+    "posted": "2026-11-06",
+    "originally_posted": "2026-11-06",
+    "extended": false
+  },
+  {
+    "title": "Project Intern",
+    "job_url": "https://www.maritimeone.sg/job-detail/PCSY9EZHS2HLBJH9OTA4",
+    "company": "Carizon Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/HBQW12EHWQH96JWYUW53",
+    "active_employer": false,
+    "posted": "2026-11-06",
+    "originally_posted": "2026-03-09",
+    "extended": true
   },
   {
     "title": "Corporate Services Intern",
@@ -285,31 +465,9 @@
     "company": "Carizon Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/HBQW12EHWQH96JWYUW53",
     "active_employer": false,
-    "posted": "2026-11-06"
-  },
-  {
-    "title": "Business Development & Technology Intern",
-    "job_url": "https://www.maritimeone.sg/job-detail/8AJY2LTDCN0JUON06J28",
-    "company": "AET Tankers Pte Ltd",
-    "company_url": "https://www.maritimeone.sg/company-detail/M5FWAS2B9AM4D2RD4BR5",
-    "active_employer": true,
-    "posted": "2026-11-05"
-  },
-  {
-    "title": "Administrative Assistant",
-    "job_url": "https://www.maritimeone.sg/job-detail/2SAC4YZTQJR1UBPTGYF1",
-    "company": "Clarksons Singapore Pte. Limited",
-    "company_url": "https://www.maritimeone.sg/company-detail/M8IPRYF34IZK61WOAUK2",
-    "active_employer": false,
-    "posted": "2026-11-05"
-  },
-  {
-    "title": "Commercial Shipping & Operations Intern",
-    "job_url": "https://www.maritimeone.sg/job-detail/ZSR3QQGJ5AMXNQY5BSX7",
-    "company": "FEDNAV SINGAPORE PTE. LTD.",
-    "company_url": "https://www.maritimeone.sg/company-detail/1TX5I16370F7XF8C0AL7",
-    "active_employer": false,
-    "posted": "2026-11-04"
+    "posted": "2026-11-06",
+    "originally_posted": "2026-11-06",
+    "extended": false
   },
   {
     "title": "Intern, Fleet Optimisation",
@@ -317,7 +475,9 @@
     "company": "Eastern Pacific Shipping Pte. Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/FCC82RCN5JLYQNEBW1BB",
     "active_employer": true,
-    "posted": "2026-11-03"
+    "posted": "2026-11-05",
+    "originally_posted": "2026-11-03",
+    "extended": false
   },
   {
     "title": "Intern, Fleet Electronics",
@@ -325,7 +485,39 @@
     "company": "Eastern Pacific Shipping Pte. Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/FCC82RCN5JLYQNEBW1BB",
     "active_employer": true,
-    "posted": "2026-11-03"
+    "posted": "2026-11-05",
+    "originally_posted": "2026-11-03",
+    "extended": false
+  },
+  {
+    "title": "Business Development & Technology Intern",
+    "job_url": "https://www.maritimeone.sg/job-detail/8AJY2LTDCN0JUON06J28",
+    "company": "AET Tankers Pte Ltd",
+    "company_url": "https://www.maritimeone.sg/company-detail/M5FWAS2B9AM4D2RD4BR5",
+    "active_employer": true,
+    "posted": "2026-11-05",
+    "originally_posted": "2026-11-05",
+    "extended": false
+  },
+  {
+    "title": "Administrative Assistant",
+    "job_url": "https://www.maritimeone.sg/job-detail/2SAC4YZTQJR1UBPTGYF1",
+    "company": "Clarksons Singapore Pte. Limited",
+    "company_url": "https://www.maritimeone.sg/company-detail/M8IPRYF34IZK61WOAUK2",
+    "active_employer": false,
+    "posted": "2026-11-05",
+    "originally_posted": "2026-11-05",
+    "extended": false
+  },
+  {
+    "title": "Commercial Shipping & Operations Intern",
+    "job_url": "https://www.maritimeone.sg/job-detail/ZSR3QQGJ5AMXNQY5BSX7",
+    "company": "FEDNAV SINGAPORE PTE. LTD.",
+    "company_url": "https://www.maritimeone.sg/company-detail/1TX5I16370F7XF8C0AL7",
+    "active_employer": false,
+    "posted": "2026-11-04",
+    "originally_posted": "2026-11-04",
+    "extended": false
   },
   {
     "title": "Senior Executive - Ship Owning (Administration)",
@@ -333,7 +525,9 @@
     "company": "Ocean Network Express Pte. Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/E27IKGC81BB71TIBE5U8",
     "active_employer": true,
-    "posted": "2026-11-03"
+    "posted": "2026-11-03",
+    "originally_posted": "2026-11-03",
+    "extended": false
   },
   {
     "title": "Regional Operations Analytics intern",
@@ -341,7 +535,9 @@
     "company": "CMA CGM Group",
     "company_url": "https://www.maritimeone.sg/company-detail/K4NNIEL9R1SYXGPDLPL5",
     "active_employer": false,
-    "posted": "2026-11-03"
+    "posted": "2026-11-03",
+    "originally_posted": "2026-11-03",
+    "extended": false
   },
   {
     "title": "Ship Finance Officer",
@@ -349,7 +545,9 @@
     "company": "YK Bulkers Pte. Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/7L87G6O5UUJ9SGCYTQT2",
     "active_employer": false,
-    "posted": "2026-11-03"
+    "posted": "2026-11-03",
+    "originally_posted": "2026-11-03",
+    "extended": false
   },
   {
     "title": "Trade Intern (Transpacific)",
@@ -357,7 +555,9 @@
     "company": "CMA CGM Group",
     "company_url": "https://www.maritimeone.sg/company-detail/K4NNIEL9R1SYXGPDLPL5",
     "active_employer": false,
-    "posted": "2026-11-03"
+    "posted": "2026-11-03",
+    "originally_posted": "2026-11-03",
+    "extended": false
   },
   {
     "title": "Intern (Fincon), Corporate, Group and Segment",
@@ -365,7 +565,9 @@
     "company": "Eastern Pacific Shipping Pte. Ltd.",
     "company_url": "https://www.maritimeone.sg/company-detail/FCC82RCN5JLYQNEBW1BB",
     "active_employer": true,
-    "posted": "2026-11-02"
+    "posted": "2026-11-02",
+    "originally_posted": "2026-11-02",
+    "extended": false
   },
   {
     "title": "Corporate Services Intern (Finance, HR & Administration)",
@@ -373,6 +575,18 @@
     "company": "Carizon Pte Ltd",
     "company_url": "https://www.maritimeone.sg/company-detail/HBQW12EHWQH96JWYUW53",
     "active_employer": false,
-    "posted": "2026-11-02"
+    "posted": "2026-11-02",
+    "originally_posted": "2026-11-02",
+    "extended": false
+  },
+  {
+    "title": "Corporate Finance - Intern",
+    "job_url": "https://www.maritimeone.sg/job-detail/I8UYBFI98YEQAWSQJUP3",
+    "company": "Transport Capital Pte. Ltd.",
+    "company_url": "https://www.maritimeone.sg/company-detail/OJQJDQTDLLXDOPFQM5K9",
+    "active_employer": false,
+    "posted": "2026-11-02",
+    "originally_posted": "2026-10-28",
+    "extended": true
   }
 ]
